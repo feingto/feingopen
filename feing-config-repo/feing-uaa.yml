@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    include: init-db-data-client
+  datasource:
+#    schema: classpath:/feing-uaa.sql
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feing-uaa?characterEncoding=utf-8
+    username: root
+    password: root
+
+security.oauth2.resource.id: oauth2-resource

@@ -1,0 +1,31 @@
+server.port: 8900
+
+spring:
+  application.name: feing-account
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: feing-config
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        max-attempts: 20
+      username: user
+      password: ${CONFIG_SERVER_PASSWORD:123456}
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      config:
+        format: YAML
+        prefix: config
+        data-key: configuration
+        defaut-context: ${spring.application.name}
+      discovery:
+        fail-fast: false
+        health-check-interval: 10s
+        health-check-path: ${server.servlet.context-path:}${management.endpoints.web.base-path:}/${management.endpoints.web.path-mapping.health:health}
+        prefer-ip-address: true
+        query-passing: true
+        register-health-check: true
+        tags: user.name=user, user.password=123456

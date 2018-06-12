@@ -1,0 +1,134 @@
+spring:
+  cache:
+    type: redis
+  http:
+    encoding:
+      force: true
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 1024MB
+      max-request-size: 10MB
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update #validate | update | create | create-drop
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    virtualHost: /
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+  security:
+    user:
+      password: ${CONFIG_SERVER_PASSWORD:123456}
+  sleuth:
+    integration:
+      enabled: false
+    sampler:
+      probability: 1.0
+    scheduled:
+      skip-pattern: (^org.*HystrixStreamTask$|^org.*ConsulCatalogWatch$|^org.*ConfigWatch$)
+    web:
+      skip-pattern: (^/mgmt.*|^/instances.*|.+favicon.*|.*.js|.*.css|.*fonts.*|.*.jpg|.*.jpeg|.*.png|.*.gif)
+  zipkin:
+    base-url: http://${ZIPKIN_HOST:localhost}:9411/
+    locator.discovery.enabled: true
+    sender.type: RABBIT
+    rabbitmq.queue: gateway-tracing
+  boot.admin.client:
+    url: http://${MONITOR_HOST:localhost}:8100
+    instance:
+      health-url: http://${spring.application.name}:${server.port}${spring.cloud.consul.discovery.health-check-path}
+      management-url: http://${spring.application.name}:${server.port}${server.servlet.context-path:}${management.endpoints.web.base-path:}
+      service-base-url: http://${spring.application.name}:${server.port}
+
+feign:
+  httpclient.enabled: true
+  client.config:
+    default:
+      connectTimeout: 10000
+      readTimeout: 10000
+      loggerLevel: basic
+  hystrix.enabled: true
+#  compression:
+#    request.enabled: true
+#    response.enabled: true
+
+hystrix:
+  command:
+    default.execution:
+      timeout.enabled: true
+      isolation:
+        strategy: SEMAPHORE #隔离策略 THREAD: 每次在一个线程中执行，并发请求数限制于线程池的线程数 | SEMAPHORE: 在调用线程中执行，并发请求数限制于semaphore信号量的值
+        thread.timeoutInMilliseconds: 60000 #thread和semaphore两种隔离策略的超时时间, 默认值是1000
+  share-security-context: true
+  stream.dashboard.intervalInMilliseconds: 5000 #stream推送频率
+
+management:
+  endpoints.web:
+    base-path: /mgmt
+    cors:
+      allow-credentials: true
+      allowed-headers: '*'
+      allowed-methods: '*'
+      allowed-origins: '*'
+      max-age: 1800s
+    exposure:
+      include: '*'
+      exclude: 'env'
+  endpoint:
+    health.show-details: always
+    shutdown.enabled: true
+    jolokia.enabled: true
+
+authserver:
+  host: ${UAA_HOST:localhost}
+  port: ${UAA_PORT:8800}
+  context-path: /uaa
+
+security:
+  basic.enabled: false
+  oauth2:
+    sso.login-path: /login
+    resource:
+      filter-order: 3 # The default order of the OAuth2 resource filter has changed from 3 to SecurityProperties.ACCESS_OVERRIDE_ORDER - 1. This places it after the actuator endpoints but before the basic authentication filter chain.
+      load-balanced: true
+      prefer-token-info: false # Use the token info, can be set to false to use the user info.
+#      token-info-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/check_token #token解码的URI
+      user-info-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/user
+      jwt:
+        key-value: feing-cloud-api
+    client:
+      access-token-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/token
+      user-authorization-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/authorize
+
+logging:
+  file: /logs/feing-cloud/${spring.application.name}_${server.port}.log
+  pattern:
+    console: '%clr(%d{dd/MM HH:mm:ss}) %clr(%5p) %clr(%-40.40logger{39}){cyan} %clr(-){faint} %m%n'
+  level:
+    com.feing.cloud: DEBUG
+    com.feing.cloud.remote:
+      SignClient: DEBUG
+      ZipkinClient: DEBUG
+      account:
+        ResourceClient: DEBUG
+        RoleClient: DEBUG
+        UserClient: DEBUG
+    org:
+      hibernate: ERROR
+      quartz: INFO
+      springframework:
+        security: INFO
+        web: INFO

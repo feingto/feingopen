@@ -1,0 +1,27 @@
+spring:
+  application.name: feing-config
+  cloud:
+    config.server:
+      native:
+        searchLocations: file:///./FeingProjects/feingyun/feing-config-repo
+      git:
+        uri: https://git.oschina.net/feingto/feing-cloud.git
+        search-paths: feing-cloud-config-repo
+        force-pull: true #如果本地副本是脏的，强制从远程存储库中提取
+        username: 2696250@qq.com
+        password: 123456
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      config:
+        format: YAML
+        prefix: config
+        data-key: configuration
+        defaut-context: ${spring.application.name}
+      discovery:
+        fail-fast: false
+        health-check-interval: 15s
+        health-check-path: ${server.servlet.context-path:}${management.endpoints.web.base-path:}/${management.endpoints.web.path-mapping.health:health}
+        prefer-ip-address: true
+        query-passing: true
+        register-health-check: true
