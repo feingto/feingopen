@@ -17,7 +17,7 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: update #validate | update | create | create-drop
+      ddl-auto: update
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -61,19 +61,16 @@ feign:
       readTimeout: 10000
       loggerLevel: basic
   hystrix.enabled: true
-#  compression:
-#    request.enabled: true
-#    response.enabled: true
 
 hystrix:
   command:
     default.execution:
       timeout.enabled: true
       isolation:
-        strategy: SEMAPHORE #隔离策略 THREAD: 每次在一个线程中执行，并发请求数限制于线程池的线程数 | SEMAPHORE: 在调用线程中执行，并发请求数限制于semaphore信号量的值
-        thread.timeoutInMilliseconds: 60000 #thread和semaphore两种隔离策略的超时时间, 默认值是1000
+        strategy: SEMAPHORE
+        thread.timeoutInMilliseconds: 60000
   share-security-context: true
-  stream.dashboard.intervalInMilliseconds: 5000 #stream推送频率
+  stream.dashboard.intervalInMilliseconds: 5000
 
 management:
   endpoints.web:
@@ -102,10 +99,8 @@ security:
   oauth2:
     sso.login-path: /login
     resource:
-      filter-order: 3 # The default order of the OAuth2 resource filter has changed from 3 to SecurityProperties.ACCESS_OVERRIDE_ORDER - 1. This places it after the actuator endpoints but before the basic authentication filter chain.
       load-balanced: true
-      prefer-token-info: false # Use the token info, can be set to false to use the user info.
-#      token-info-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/check_token #token解码的URI
+      prefer-token-info: false
       user-info-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/user
       jwt:
         key-value: feingto-cloud-api
