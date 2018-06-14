@@ -4,7 +4,7 @@ spring:
     config.server:
       git:
         uri: https://git.oschina.net/feingto/feingopen.git
-        search-paths: feingto-cloud-config-repo
+        search-paths: feingto-config-repo
         force-pull: true
     consul:
       host: ${CONSUL_HOST:localhost}
