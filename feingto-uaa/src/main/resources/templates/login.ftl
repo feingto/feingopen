@@ -44,7 +44,6 @@
             <input type="password" class="form-control" id="password" name="password" placeholder="输入密码" required>
           </div>
           <div class="form-group input-sm text-center">
-            <input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="submit" class="btn btn-block btn-primary btn-default" value="登录">
           </div>
         </form>
