@@ -108,13 +108,13 @@ security:
 #      token-info-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/check_token #token解码的URI
       user-info-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/user
       jwt:
-        key-value: feing-cloud-api
+        key-value: feingto-cloud-api
     client:
       access-token-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/token
       user-authorization-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/authorize
 
 logging:
-  file: /logs/feing-cloud/${spring.application.name}_${server.port}.log
+  file: /logs/feingto-cloud/${spring.application.name}_${server.port}.log
   pattern:
     console: '%clr(%d{dd/MM HH:mm:ss}) %clr(%5p) %clr(%-40.40logger{39}){cyan} %clr(-){faint} %m%n'
   level:

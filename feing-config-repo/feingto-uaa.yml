@@ -2,8 +2,8 @@ spring:
   profiles:
     include: init-db-data-client
   datasource:
-#    schema: classpath:/feing-uaa.sql
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feing-uaa?characterEncoding=utf-8
+#    schema: classpath:/feingto-uaa.sql
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feingto-uaa?characterEncoding=utf-8
     username: root
     password: root
 

@@ -1,7 +1,7 @@
 spring:
   datasource:
-#    schema: classpath:/feing-admin.sql
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feing-admin?characterEncoding=utf-8
+#    schema: classpath:/feingto-admin.sql
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feingto-admin?characterEncoding=utf-8
     username: root
     password: root
   event:

@@ -1,12 +1,12 @@
 server.port: 8900
 
 spring:
-  application.name: feing-account
+  application.name: feingto-account
   cloud:
     config:
       discovery:
         enabled: true
-        service-id: feing-config
+        service-id: feingto-config
       fail-fast: true
       retry:
         initial-interval: 1000

@@ -3,12 +3,12 @@ server:
   servlet.context-path: /uaa
 
 spring:
-  application.name: feing-uaa
+  application.name: feingto-uaa
   cloud:
     config:
       discovery:
         enabled: true
-        service-id: feing-config
+        service-id: feingto-config
       fail-fast: true
       retry:
         initial-interval: 1000

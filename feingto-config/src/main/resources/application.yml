@@ -1,7 +1,7 @@
 server.port: ${CONFIG_SERVER_PORT:7979}
 
 spring:
-  profiles.active: native #native 为本地环境, git 为gitee.com环境
+  profiles.active: git #native 为本地环境, git 为gitee.com环境
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
@@ -15,7 +15,7 @@ management:
     health.show-details: always
 
 logging:
-  file: /logs/feing-cloud/${spring.application.name}_${server.port}.log
+  file: /logs/feingto-cloud/${spring.application.name}_${server.port}.log
   pattern:
     console: '%clr(%d{dd/MM HH:mm:ss}) %clr(%5p) %clr(%-40.40logger{39}){cyan} %clr(-){faint} %m%n'
   level:

@@ -1,15 +1,11 @@
 spring:
-  application.name: feing-config
+  application.name: feingto-config
   cloud:
     config.server:
-      native:
-        searchLocations: file:///./FeingProjects/feingyun/feing-config-repo
       git:
-        uri: https://git.oschina.net/feingto/feing-cloud.git
-        search-paths: feing-cloud-config-repo
-        force-pull: true #如果本地副本是脏的，强制从远程存储库中提取
-        username: 2696250@qq.com
-        password: 123456
+        uri: https://git.oschina.net/feingto/feingopen.git
+        search-paths: feingto-cloud-config-repo
+        force-pull: true
     consul:
       host: ${CONSUL_HOST:localhost}
       port: ${CONSUL_PORT:8500}

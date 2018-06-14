@@ -1,7 +1,7 @@
 spring:
   datasource:
-#    schema: classpath:/feing-gateway.sql
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feing-gateway?characterEncoding=utf-8
+#    schema: classpath:/feingto-gateway.sql
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feingto-gateway?characterEncoding=utf-8
     username: root
     password: root
   event:
@@ -33,7 +33,7 @@ zuul:
   routes:
     uaa-service:
       path: ${authserver.context-path}/**
-      service-id: feing-uaa
+      service-id: feingto-uaa
       strip-prefix: false
       sensitive-headers:
     baidu:
