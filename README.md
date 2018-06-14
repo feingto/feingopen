@@ -7,12 +7,12 @@
 
 #### 软件架构
 软件架构说明
-* feing-account - 用户中心
-* feing-admin - 管理平台
-* feing-config - 分布式配置
-* feing-gateway - API网关 - 分布式金丝雀动态路由
-* feing-remote - Feign客户端服务
-* feing-uaa - OAuth2授权服务中心
+* feingto-account - 用户中心
+* feingto-admin - 管理平台
+* feingto-config - 分布式配置
+* feingto-gateway - API网关 - 分布式金丝雀动态路由
+* feingto-remote - Feign客户端服务
+* feingto-uaa - OAuth2授权服务中心
 
 
 #### 安装教程
