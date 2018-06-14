@@ -2,10 +2,8 @@ spring:
   application.name: feingto-config
   cloud:
     config.server:
-      git:
-        uri: https://git.oschina.net/feingto/feingopen.git
-        search-paths: feingto-config-repo
-        force-pull: true
+      native:
+        searchLocations: file:///./FeingProjects/feingopen/feingto-config-repo
     consul:
       host: ${CONSUL_HOST:localhost}
       port: ${CONSUL_PORT:8500}
