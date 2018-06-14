@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.feing.cloud</groupId>
-    <artifactId>feing-cloud</artifactId>
+    <artifactId>feingto-cloud</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
 
     <modules>
-        <module>feing-config</module>
-        <module>feing-account</module>
-        <module>feing-uaa</module>
-        <module>feing-remote</module>
+        <module>feingto-config</module>
+        <module>feingto-account</module>
+        <module>feingto-uaa</module>
+        <module>feingto-remote</module>
     </modules>
 
     <properties>
@@ -72,13 +72,13 @@
             </dependency>
             <!-- Feing modules -->
             <dependency>
-                <groupId>com.feing.cloud</groupId>
-                <artifactId>feing-core</artifactId>
-                <version>1.0</version>
+                <groupId>com.feingto</groupId>
+                <artifactId>feingto-core</artifactId>
+                <version>1.1</version>
             </dependency>
             <dependency>
-                <groupId>com.feing.cloud</groupId>
-                <artifactId>feing-remote</artifactId>
+                <groupId>com.feingto</groupId>
+                <artifactId>feingto-remote</artifactId>
                 <version>1.0</version>
             </dependency>
             <!-- Apache Commons -->
