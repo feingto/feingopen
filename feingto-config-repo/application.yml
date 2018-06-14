@@ -114,7 +114,7 @@ security:
       user-authorization-uri: http://${authserver.host}:${authserver.port}${authserver.context-path}/oauth/authorize
 
 logging:
-  file: /logs/feingto-cloud/${spring.application.name}_${server.port}.log
+  file: /logs/feingopen/${spring.application.name}_${server.port}.log
   pattern:
     console: '%clr(%d{dd/MM HH:mm:ss}) %clr(%5p) %clr(%-40.40logger{39}){cyan} %clr(-){faint} %m%n'
   level:
