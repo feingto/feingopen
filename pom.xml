@@ -238,6 +238,24 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>1.1.1</version>
+                    <configuration>
+                        <dockerHost>http://localhost:2375</dockerHost>
+                        <resources>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}</directory>
+                                <include>${project.build.finalName}.jar</include>
+                            </resource>
+                        </resources>
+                        <!-- 以下两行是为了docker push到DockerHub使用的。 -->
+                        <serverId>docker-aliyun</serverId>
+                        <registryUrl>registry.cn-shenzhen.aliyuncs.com</registryUrl>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
