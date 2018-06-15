@@ -12,7 +12,6 @@
         <module>feingto-config</module>
         <module>feingto-account</module>
         <module>feingto-uaa</module>
-        <module>feingto-remote</module>
     </modules>
 
     <properties>
@@ -74,12 +73,12 @@
             <dependency>
                 <groupId>com.feingto</groupId>
                 <artifactId>feingto-core</artifactId>
-                <version>1.1</version>
+                <version>1.2</version>
             </dependency>
             <dependency>
                 <groupId>com.feingto</groupId>
                 <artifactId>feingto-remote</artifactId>
-                <version>1.0</version>
+                <version>1.2</version>
             </dependency>
             <!-- Apache Commons -->
             <dependency>
