@@ -75,6 +75,21 @@
 * 密码模式 resource owner password credentials
 * 简化模式 implicit
 
+#### Docker说明
+* 在`${maven_home}/conf/settings.xml`中增加`server`节点，示例：
+```
+<server>
+    <id>docker-aliyun</id>
+    <username>登录名</username>
+    <password>登录密码</password>
+    <configuration>
+        <email>邮箱</email>
+    </configuration>
+</server>
+```
+* 使用`docker:build`命令编译docker镜像
+* 使用`docker:push`命令推送docker镜像到上面配置的服务器
+
 #### 码云特技
 
 1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
