@@ -14,6 +14,12 @@
 * feingto-remote - Feign客户端服务
 * feingto-uaa - OAuth2授权服务中心
 
+![api_group](http://www.feingto.com/static/gateway_demo/api_group.png)
+![api_group_stage](http://www.feingto.com/static/gateway_demo/api_group_stage.png)
+![api list](http://www.feingto.com/static/gateway_demo/api_list.png)
+![api_detail](http://www.feingto.com/static/gateway_demo/api_detail.png)
+![api_history](http://www.feingto.com/static/gateway_demo/api_history.png)
+
 
 #### 安装教程
 
