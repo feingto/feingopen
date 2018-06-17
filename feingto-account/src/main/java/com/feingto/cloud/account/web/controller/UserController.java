@@ -6,14 +6,17 @@ import com.feingto.cloud.core.web.Constants;
 import com.feingto.cloud.core.web.WebResult;
 import com.feingto.cloud.domain.account.Resource;
 import com.feingto.cloud.domain.account.User;
-import com.feingto.cloud.dto.oauth.ClientDetailApiDTO;
 import com.feingto.cloud.orm.jpa.page.ConditionPage;
 import com.feingto.cloud.orm.jpa.page.Page;
 import com.feingto.cloud.orm.jpa.specification.bean.Condition;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * 用户管理
@@ -70,13 +73,20 @@ public class UserController {
         return WebResult.success();
     }
 
-    @GetMapping("/{username}/pages")
-    public Page<User> findPageByUsername(@RequestBody Page<User> page, @PathVariable String username, String keyword) {
-        return userService.findPageByUsername(page, username, keyword);
-    }
-
-    @GetMapping("/{username}/apis")
-    public List<ClientDetailApiDTO> findOAuthApisByUsername(@PathVariable String username) {
-        return userService.findOAuthApisByUsername(username);
+    /**
+     * 分页获取用户，指定用户在最前面
+     *
+     * @param page      Page
+     * @param userNames 前置用户名逗号分隔字符串
+     * @param keyword   关键字
+     */
+    @PostMapping("/preposition")
+    public Page<User> findPageByUsername(@RequestBody Page<User> page, String userNames, String keyword) {
+        Set<String> users = Sets.newHashSet(Splitter.on(',')
+                .trimResults()
+                .omitEmptyStrings()
+                .splitToList(Optional.ofNullable(userNames)
+                        .orElse("")));
+        return userService.findPageByUsers(page, users, keyword);
     }
 }

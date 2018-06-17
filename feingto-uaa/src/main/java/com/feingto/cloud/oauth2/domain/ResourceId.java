@@ -27,8 +27,6 @@ import java.util.Set;
 @Table(name = "oauth_resource")
 @DynamicUpdate
 public class ResourceId extends IdEntity {
-    private static final long serialVersionUID = 234102791754894960L;
-
     @Builder.Default
     @OneToMany(mappedBy = "resourceId")
     private Set<ClientDetailResourceId> clientDetailResourceIds = new HashSet<>();

@@ -23,8 +23,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "oauth_client_detail_grant_type")
 @DynamicUpdate
 public class ClientDetailGrantType extends IdEntity {
-    private static final long serialVersionUID = -6970738326748455662L;
-
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn

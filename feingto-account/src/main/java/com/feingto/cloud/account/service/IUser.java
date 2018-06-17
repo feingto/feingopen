@@ -2,11 +2,11 @@ package com.feingto.cloud.account.service;
 
 import com.feingto.cloud.domain.account.Resource;
 import com.feingto.cloud.domain.account.User;
-import com.feingto.cloud.dto.oauth.ClientDetailApiDTO;
 import com.feingto.cloud.orm.jpa.IBase;
 import com.feingto.cloud.orm.jpa.page.Page;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author longfei
@@ -24,16 +24,9 @@ public interface IUser extends IBase<User, String> {
     /**
      * 分页获取用户，指定用户在最前面
      *
-     * @param page     Page
-     * @param username 前置用户名
-     * @param keyword  关键字
+     * @param page       Page
+     * @param orderUsers 前置用户名集合
+     * @param keyword    关键字
      */
-    Page<User> findPageByUsername(Page<User> page, String username, String keyword);
-
-    /**
-     * 获取APP 密钥绑定用户的 API
-     *
-     * @param username 前置用户名
-     */
-    List<ClientDetailApiDTO> findOAuthApisByUsername(String username);
+    Page<User> findPageByUsers(Page<User> page, Set<String> orderUsers, String keyword);
 }

@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @ComponentScan(value = {Constants.BASE_REMOTE_PACKAGES, "com.feingto.cloud.account"},
         excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, value = ExcludeComponentScan.class)})
-@EnableFeignClients(Constants.BASE_REMOTE_PACKAGES)
 @EnableJpaRepositories(basePackages = "com.feingto.cloud.account.repository", repositoryBaseClass = MyRepositoryImpl.class)
 @EnableTransactionManagement
 @EntityScan("com.feingto.cloud.domain.account")

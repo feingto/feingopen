@@ -44,6 +44,9 @@ public class GwJwtAccessTokenConverter extends JwtAccessTokenConverter {
             //additionalInformation.put(OAuth2AccessToken.SCOPE, details.getAdditionalInformation().get("apiIds"));
             additionalInformation.put("apiIds", details.getAdditionalInformation().get("apiIds"));
         }
+        if (details.getAdditionalInformation().containsKey("users")) {
+            additionalInformation.put("users", details.getAdditionalInformation().get("users"));
+        }
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInformation);
         return super.enhance(accessToken, authentication);
     }

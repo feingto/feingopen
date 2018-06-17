@@ -46,16 +46,16 @@ public class SecurityUser implements UserDetails {
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .authorities(AuthorityUtils.createAuthorityList(user.getUserRoles().stream().map(userRole -> prefixRoleName(userRole.getRole().getName())).toArray(String[]::new)))
+                .authorities(AuthorityUtils.createAuthorityList(user.getUserRoles().stream().map(userRole -> prefixRole(userRole.getRole().getSn())).toArray(String[]::new)))
                 .enabled(user.isEnabled())
                 .build();
     }
 
-    private static String prefixRoleName(String roleName) {
-        if (StringUtils.hasText(roleName) && !roleName.startsWith(ROLE_PREFIX)) {
-            return ROLE_PREFIX + roleName;
+    private static String prefixRole(String role) {
+        if (StringUtils.hasText(role) && !role.startsWith(ROLE_PREFIX)) {
+            return ROLE_PREFIX + role;
         }
-        return roleName;
+        return role;
     }
 
     @Override

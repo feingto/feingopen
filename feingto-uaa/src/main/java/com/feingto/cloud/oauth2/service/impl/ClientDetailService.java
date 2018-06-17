@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 /**
  * @author longfei
  */
@@ -26,16 +24,6 @@ public class ClientDetailService extends BaseService<ClientDetail, String> imple
         return super.findOne(Condition.NEW().eq("clientId", clientId));
     }
 
-    @Override
-    public ClientDetail findByUsername(String username) {
-        return this.findOne(Condition.NEW().eq("username", username));
-    }
-
-    @Override
-    public List<ClientDetail> findByCreatedBy(String createdBy) {
-        return this.findAll(Condition.NEW().eq("createdBy", createdBy));
-    }
-
     //@RedisCachePut(key = "'feingto-uaa:clientDetails:' + #clientDetail.clientId", expire = 600)
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -46,20 +34,6 @@ public class ClientDetailService extends BaseService<ClientDetail, String> imple
             Assert.state(super.count(Condition.NEW().ne("id", clientDetail.getId()).eq("clientId", clientDetail.getClientId())) == 0, "客户端\"" + clientDetail.getClientId() + "\"已存在.");
         }
         return repository.save(clientDetail);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void bindUser(String id, String username) {
-        ClientDetail detail = this.findOne(Condition.NEW().eq("username", username));
-        if (detail != null) {
-            detail.setUsername(null);
-            repository.save(detail);
-        }
-        repository.findById(id).ifPresent(clientDetail -> {
-            clientDetail.setUsername(username);
-            repository.save(clientDetail);
-        });
     }
 
     //@RedisCacheEvict(key = "'feingto-uaa:clientDetails:' + #clientId")

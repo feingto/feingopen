@@ -2,10 +2,9 @@ package com.feingto.cloud.oauth2.security;
 
 import com.feingto.cloud.dto.oauth.ClientDetailApiDTO;
 import com.feingto.cloud.dto.oauth.ClientDetailDTO;
-import com.feingto.cloud.dto.oauth.ClientDetailLimitDTO;
 import com.feingto.cloud.oauth2.domain.ClientDetail;
-import com.feingto.cloud.oauth2.domain.ClientDetailLimit;
 import com.feingto.cloud.oauth2.domain.ClientDetailScope;
+import com.feingto.cloud.oauth2.domain.ClientDetailUser;
 import com.feingto.cloud.oauth2.domain.RedirectUri;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -13,9 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -63,18 +60,21 @@ public class ClientDetailHelper {
                             clientDetailAuthority.getAuthority().getValue())))
                     .collect(Collectors.toList()));
         }
+        Map<String, Object> additionalInformation = Maps.newHashMap();
         if (clientDetail.getClientDetailApis() != null) {
-            Map<String, Set<ClientDetailApiDTO>> additionalInformations = Maps.newLinkedHashMap();
-            additionalInformations.put("apiIds", clientDetail.getClientDetailApis().stream()
+            additionalInformation.put("apiIds", clientDetail.getClientDetailApis().stream()
                     .map(clientDetailApi -> ClientDetailApiDTO.builder()
                             .apiId(clientDetailApi.getApiId())
                             .stage(clientDetailApi.getStage())
                             .build())
                     .collect(Collectors.toSet()));
-            clientDetails.setAdditionalInformation(additionalInformations);
-        } else {
-            clientDetails.setAdditionalInformation(Collections.emptyMap());
         }
+        if (clientDetail.getClientDetailUsers() != null) {
+            additionalInformation.put("users", clientDetail.getClientDetailUsers().stream()
+                    .map(ClientDetailUser::getUsername)
+                    .collect(Collectors.toSet()));
+        }
+        clientDetails.setAdditionalInformation(additionalInformation);
         return clientDetails;
     };
 
@@ -121,13 +121,10 @@ public class ClientDetailHelper {
                             .build())
                     .collect(Collectors.toSet()));
         }
-        if (clientDetail.getClientLimit() != null) {
-            ClientDetailLimit clientLimit = clientDetail.getClientLimit();
-            clientDetailDto.setClientLimit(ClientDetailLimitDTO.builder()
-                    .limits(clientLimit.getLimits())
-                    .frequency(clientLimit.getFrequency())
-                    .intervalUnit(clientLimit.getIntervalUnit())
-                    .build());
+        if (clientDetail.getClientDetailUsers() != null) {
+            clientDetailDto.setUsers(clientDetail.getClientDetailUsers().stream()
+                    .map(ClientDetailUser::getUsername)
+                    .collect(Collectors.toSet()));
         }
         return clientDetailDto;
     };

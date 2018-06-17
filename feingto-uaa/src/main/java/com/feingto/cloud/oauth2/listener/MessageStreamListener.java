@@ -28,7 +28,6 @@ public class MessageStreamListener {
             log.debug(">>>>>> Receive REMOVE route refreshed event: {}", routeMessage.getApi().getPath());
             clientDetailService.findAll()
                     .forEach(clientDetail -> {
-                        // 删除密钥绑定的API
                         clientDetail.getClientDetailApis()
                                 .removeIf(cda -> routeMessage.getApi().getSn().equals(cda.getApiId())
                                         && routeMessage.getApi().getStage().equals(cda.getStage()));

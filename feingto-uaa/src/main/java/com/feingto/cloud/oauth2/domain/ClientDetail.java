@@ -88,11 +88,10 @@ public class ClientDetail extends BaseEntity {
     @OneToMany(mappedBy = "clientDetail", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ClientDetailApi> clientDetailApis = new HashSet<>();
 
+    @Builder.Default
     @JsonIgnoreProperties(value = "clientDetail", allowSetters = true)
-    @Fetch(FetchMode.JOIN)
-    @OneToOne(mappedBy = "clientDetail", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private ClientDetailLimit clientLimit;
-
-    @Column(unique = true)
-    private String username;
+    @BatchSize(size = 30)
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "clientDetail", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ClientDetailUser> clientDetailUsers = new HashSet<>();
 }

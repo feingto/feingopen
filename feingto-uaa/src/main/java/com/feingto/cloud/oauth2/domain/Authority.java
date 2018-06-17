@@ -24,8 +24,6 @@ import javax.validation.constraints.Size;
 @Table(name = "oauth_authority")
 @DynamicUpdate
 public class Authority extends IdEntity {
-    private static final long serialVersionUID = -8733894522053280296L;
-
     @Size(min = 1, max = 50)
     @Column(unique = true, length = 50)
     private String value;

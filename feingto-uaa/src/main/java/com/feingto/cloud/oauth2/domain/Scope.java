@@ -22,8 +22,6 @@ import java.util.Set;
 @Table(name = "oauth_scope")
 @DynamicUpdate
 public class Scope extends IdEntity {
-    private static final long serialVersionUID = 1048542730416197732L;
-
     @Builder.Default
     @OneToMany(mappedBy = "scope")
     private Set<ClientDetailScope> clientDetailScopes = new HashSet<>();

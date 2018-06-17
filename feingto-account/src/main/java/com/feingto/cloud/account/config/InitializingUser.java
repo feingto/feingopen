@@ -39,9 +39,9 @@ public class InitializingUser implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        Arrays.stream(DEFAULT_ROLES).forEach(roleName ->
-                Optional.ofNullable(roleService.findOne(Condition.NEW().eq("name", roleName)))
-                        .orElseGet(() -> roleService.save(Role.builder().name(roleName).enabled(true).build())));
+        Arrays.stream(DEFAULT_ROLES).forEach(role ->
+                Optional.ofNullable(roleService.findOne(Condition.NEW().eq("sn", role)))
+                        .orElseGet(() -> roleService.save(Role.builder().sn(role).name(role).enabled(true).build())));
 
         Optional.ofNullable(userService.findOne(Condition.NEW().eq("username", DEFAULT_ADMIN_USERNAME)))
                 .orElseGet(() -> {
@@ -52,7 +52,7 @@ public class InitializingUser implements InitializingBean {
                             .build();
                     user.setCreatedBy(DEFAULT_ADMIN_USERNAME);
                     user.setCreatedDate(new Date());
-                    Optional.ofNullable(roleService.findOne(Condition.NEW().eq("name", "ADMIN")))
+                    Optional.ofNullable(roleService.findOne(Condition.NEW().eq("sn", "ADMIN")))
                             .ifPresent(role -> user.setUserRoles(Lists.newArrayList(UserRole.builder().user(user).role(role).build())));
                     return userService.save(user);
                 });
@@ -65,7 +65,7 @@ public class InitializingUser implements InitializingBean {
                             .build();
                     user.setCreatedBy(DEFAULT_ADMIN_USERNAME);
                     user.setCreatedDate(new Date());
-                    Optional.ofNullable(roleService.findOne(Condition.NEW().eq("name", "USER")))
+                    Optional.ofNullable(roleService.findOne(Condition.NEW().eq("sn", "USER")))
                             .ifPresent(role -> user.setUserRoles(Lists.newArrayList(UserRole.builder().user(user).role(role).build())));
                     return userService.save(user);
                 });

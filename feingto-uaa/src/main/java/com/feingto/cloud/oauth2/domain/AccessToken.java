@@ -16,18 +16,16 @@ import java.util.Map;
 /**
  * @author longfei
  */
+@Builder
 @Data
 @EqualsAndHashCode(of = "tokenId", callSuper = false)
 @ToString(exclude = {"token", "authentication", "refreshToken"})
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
 @Table(name = "oauth_access_token")
 @DynamicUpdate
 public class AccessToken extends IdEntity {
-    private static final long serialVersionUID = -4894424834842502363L;
-
     @NonNull
     @Column(nullable = false, unique = true)
     private String tokenId;

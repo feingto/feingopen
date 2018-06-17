@@ -76,7 +76,6 @@ public class OAuth2ServerConfiguration {
         @Bean
         public JwtAccessTokenConverter accessTokenConverter() {
             GwJwtAccessTokenConverter converter = new GwJwtAccessTokenConverter();
-            // 测试环境使用对称加密方式(资源服务使用相同的key)，生产时候使用RSA非对称加密方式
             converter.setSigningKey(key);
             return converter;
         }

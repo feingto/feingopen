@@ -20,8 +20,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "oauth_client_detail_scope")
 @DynamicUpdate
 public class ClientDetailScope extends IdEntity {
-    private static final long serialVersionUID = 7806230602022368398L;
-
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn

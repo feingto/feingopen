@@ -1,11 +1,9 @@
 package com.feingto.cloud.oauth2.web.controller;
 
 import com.feingto.cloud.core.web.Constants;
-import com.feingto.cloud.domain.type.IntervalUnit;
 import com.feingto.cloud.domain.type.Stage;
 import com.feingto.cloud.dto.oauth.ClientDetailApiDTO;
 import com.feingto.cloud.dto.oauth.ClientDetailDTO;
-import com.feingto.cloud.dto.oauth.ClientDetailLimitDTO;
 import com.feingto.cloud.kit.StringKit;
 import com.feingto.cloud.oauth2.domain.*;
 import com.feingto.cloud.oauth2.security.ClientDetailHelper;
@@ -17,17 +15,20 @@ import com.feingto.cloud.oauth2.service.impl.GrantTypeService;
 import com.feingto.cloud.oauth2.service.impl.ScopeService;
 import com.feingto.cloud.orm.jpa.page.Page;
 import com.feingto.cloud.orm.jpa.specification.bean.Condition;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -60,32 +61,18 @@ public class ClientDetailController {
     @Autowired
     private GwClientDetailsService clientDetailsService;
 
-    @GetMapping("/findByClientId")
-    public ClientDetailDTO findByClientId(@RequestParam String clientId) {
+    @GetMapping("/findByClientId/{clientId}")
+    public ClientDetailDTO findByClientId(@PathVariable String clientId) {
         return Optional.ofNullable(clientDetailService.findByClientId(clientId))
                 .map(ClientDetailHelper.transform2dto)
                 .orElseThrow(() -> new NoSuchClientException("Client ID not found."));
     }
 
-    @GetMapping("/findByUsername")
-    public ClientDetailDTO findByUsername(@RequestParam String username) {
-        return Optional.ofNullable(clientDetailService.findByUsername(username))
-                .map(ClientDetailHelper.transform2dto)
-                .orElse(null);
-    }
-
-    @GetMapping("/findByCreatedBy")
-    public List<ClientDetailDTO> findByCreatedBy(@RequestParam String createdBy) {
-        return clientDetailService.findByCreatedBy(createdBy).stream()
-                .map(ClientDetailHelper.transform2dto)
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/findByApi")
-    public List<ClientDetailApiDTO> findByApi(@RequestParam String apiId, String createdBy) {
+    @GetMapping("/findApiById/{apiId}")
+    public List<ClientDetailApiDTO> findApiById(@PathVariable String apiId, String username) {
         Condition condition = Condition.NEW().eq("apiId", apiId);
-        if (StringUtils.hasLength(createdBy)) {
-            condition = condition.eq("clientDetail.createdBy", createdBy);
+        if (StringUtils.hasLength(username)) {
+            condition = condition.eq("clientDetail.clientDetailUsers.username", username);
         }
         return clientDetailApiService.findAll(condition).stream()
                 .map(clientDetailApi -> ClientDetailApiDTO.builder()
@@ -96,18 +83,22 @@ public class ClientDetailController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/limit")
-    public ClientDetailLimitDTO findClientDetailLimit(@RequestParam String clientId) {
-        clientDetailService.setLazyInitializer(clientDetail -> Hibernate.initialize(clientDetail.getClientLimit()));
-        return Optional.ofNullable(clientDetailService.findByClientId(clientId))
-                .filter(clientDetail -> clientDetail.getClientLimit() != null)
-                .map(ClientDetail::getClientLimit)
-                .map(clientDetailLimit -> ClientDetailLimitDTO.builder()
-                        .limits(clientDetailLimit.getLimits())
-                        .frequency(clientDetailLimit.getFrequency())
-                        .intervalUnit(clientDetailLimit.getIntervalUnit())
+    /**
+     * 获取用户全部客户端绑定的api
+     */
+    @GetMapping("/findApiByUser/{username}")
+    public List<ClientDetailApiDTO> findApiByUser(@PathVariable String username) {
+        List<ClientDetail> clientDetails = clientDetailService.findAll(Condition.NEW()
+                .eq("clientDetailUsers.username", username));
+        return CollectionUtils.isEmpty(clientDetails) ? Lists.newArrayList() : clientDetails.stream()
+                .map(ClientDetail::getClientDetailApis)
+                .flatMap(Collection::stream)
+                .map(clientDetailApi -> ClientDetailApiDTO.builder()
+                        .clientDetail(ClientDetailHelper.transform2dto.apply(clientDetailApi.getClientDetail()))
+                        .apiId(clientDetailApi.getApiId())
+                        .stage(clientDetailApi.getStage())
                         .build())
-                .orElseThrow(() -> new NoSuchClientException("Client ID not found."));
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/grantTypes")
@@ -142,7 +133,7 @@ public class ClientDetailController {
     public Page data(@RequestBody Page page, String username) {
         Condition condition = Condition.NEW();
         if (StringUtils.hasLength(username)) {
-            condition.eq("username", username);
+            condition.eq("clientDetailUsers.username", username);
         }
         page = clientDetailService.findByPage(condition, page);
         List<ClientDetail> clientDetailList = page.getContent();
@@ -153,8 +144,18 @@ public class ClientDetailController {
     }
 
     @PostMapping("/save")
-    public ClientDetailDTO saveOrUpdate(@RequestBody ClientDetailDTO clientDetailDto,
-                                        @RequestParam(defaultValue = "false") boolean autoApproveAll) {
+    public ClientDetailDTO save(@RequestBody ClientDetailDTO clientDetailDto) {
+        clientDetailDto.setAuthorities(Sets.newHashSet(authorities()));
+        clientDetailDto.setGrantTypes(Sets.newHashSet(grantTypes()));
+        clientDetailDto.setScopes(Sets.newHashSet(scopes()));
+        clientDetailDto.setAutoScopes(clientDetailDto.getScopes());
+        clientDetailDto.setAutoApproveAll(true);
+        return this.saveAll(clientDetailDto, true);
+    }
+
+    @PostMapping("/saveAll")
+    public ClientDetailDTO saveAll(@RequestBody ClientDetailDTO clientDetailDto,
+                                   @RequestParam(defaultValue = "false") boolean autoApproveAll) {
         BaseClientDetails baseClientDetails = new BaseClientDetails();
         BeanUtils.copyProperties(clientDetailDto, baseClientDetails);
         baseClientDetails.setAuthorizedGrantTypes(clientDetailDto.getGrantTypes());
@@ -175,17 +176,7 @@ public class ClientDetailController {
             clientDetailsService.updateClientSecret(clientDetailDto.getClientId(), secret);
         }
 
-        // 默认流量限制1分钟3次
         ClientDetail detail = clientDetailService.findOne(Condition.NEW().eq("clientId", baseClientDetails.getClientId()));
-        ClientDetailLimitDTO limitDto = clientDetailDto.getClientLimit();
-        detail.setClientLimit(ClientDetailLimit.builder()
-                .clientDetail(detail)
-                .limits(limitDto != null && limitDto.getLimits() != null ? limitDto.getLimits() : 3L)
-                .frequency(limitDto != null && limitDto.getFrequency() != null ? limitDto.getFrequency() : 1L)
-                .intervalUnit(limitDto != null && limitDto.getIntervalUnit() != null ? limitDto.getIntervalUnit() : IntervalUnit.MINUTES)
-                .build());
-
-        // 设置名称
         detail.setName(clientDetailDto.getName());
         clientDetailService.save(detail);
         return ClientDetailHelper.transform2dto.apply(detail);
@@ -227,7 +218,23 @@ public class ClientDetailController {
     }
 
     @PostMapping("/user/{id}")
-    public void bindUser(@PathVariable String id, String username) {
-        clientDetailService.bindUser(id, username);
+    public void bindUser(@PathVariable String id, @RequestBody List<String> users) {
+        ClientDetail clientDetail = clientDetailService.findById(id);
+        clientDetail.getClientDetailUsers().clear();
+        users.forEach(user ->
+                clientDetail.getClientDetailUsers().add(ClientDetailUser.builder()
+                        .clientDetail(clientDetail)
+                        .username(user)
+                        .build()));
+        clientDetailService.save(clientDetail);
+    }
+
+    @DeleteMapping("/user/{id}")
+    public void unBindUser(@PathVariable String id, @RequestBody List<String> users) {
+        ClientDetail clientDetail = clientDetailService.findById(id);
+        users.forEach(user ->
+                clientDetail.getClientDetailUsers().removeIf(clientDetailUser ->
+                        user.contains(clientDetailUser.getUsername())));
+        clientDetailService.save(clientDetail);
     }
 }

@@ -5,8 +5,7 @@ import com.feingto.cloud.account.service.IResource;
 import com.feingto.cloud.account.service.IUser;
 import com.feingto.cloud.domain.IdEntity;
 import com.feingto.cloud.domain.account.*;
-import com.feingto.cloud.dto.oauth.ClientDetailApiDTO;
-import com.feingto.cloud.dto.oauth.ClientDetailDTO;
+import com.feingto.cloud.kit.StringKit;
 import com.feingto.cloud.kit.reflection.ConvertKit;
 import com.feingto.cloud.orm.jdbc.JdbcTemplateKit;
 import com.feingto.cloud.orm.jdbc.model.Records;
@@ -15,7 +14,6 @@ import com.feingto.cloud.orm.jpa.IBase;
 import com.feingto.cloud.orm.jpa.page.Page;
 import com.feingto.cloud.orm.jpa.specification.bean.Condition;
 import com.feingto.cloud.orm.jpa.specification.bean.OrderSort;
-import com.feingto.cloud.remote.SignClient;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -54,9 +52,6 @@ public class UserService extends BaseService<User, String> implements IUser {
     @Autowired
     @Qualifier("roleResourceColumnService")
     private IBase<RoleResourceColumn, String> rrcService;
-
-    @Autowired
-    private SignClient signClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -146,7 +141,7 @@ public class UserService extends BaseService<User, String> implements IUser {
     }
 
     @Override
-    public Page<User> findPageByUsername(Page<User> page, String username, String keyword) {
+    public Page<User> findPageByUsers(Page<User> page, Set<String> orderUsers, String keyword) {
         JdbcTemplateKit jdbc = JdbcTemplateKit.builder().jdbcTemplate(jdbcTemplate).build();
         StringBuilder where = new StringBuilder(" where 1=1");
         if (StringUtils.hasText(keyword)) {
@@ -160,12 +155,16 @@ public class UserService extends BaseService<User, String> implements IUser {
             totalPages++;
         }
 
-        sql = new StringBuilder("select id, username, real_name as realName from sy_user").append(where)
-                .append(" order by username=? desc,")
-                .append(" ").append(page.getOrderField())
+        sql = new StringBuilder("select id, username, real_name as realName from sy_user")
+                .append(where)
+                .append(" order by");
+        if (!CollectionUtils.isEmpty(orderUsers)) {
+            sql.append(" username in (").append(StringKit.toQuoteString(orderUsers)).append(") desc,");
+        }
+        sql.append(" ").append(page.getOrderField())
                 .append(" ").append(page.getOrderDirection())
                 .append(" limit ?, ?");
-        Records records = jdbc.list(sql.toString(), username, (page.getPageNumber() - 1) * page.getPageSize(), page.getPageNumber() * page.getPageSize());
+        Records records = jdbc.list(sql.toString(), (page.getPageNumber() - 1) * page.getPageSize(), page.getPageNumber() * page.getPageSize());
         page.setContent(records.stream()
                 .map(record -> User.builder()
                         .username(record.getString("username"))
@@ -174,15 +173,5 @@ public class UserService extends BaseService<User, String> implements IUser {
         page.setTotalElements(totalElements);
         page.setTotalPages(totalPages);
         return page;
-    }
-
-    @Override
-    public List<ClientDetailApiDTO> findOAuthApisByUsername(String username) {
-        List<ClientDetailApiDTO> apiIds = Lists.newArrayList();
-        ClientDetailDTO clientDetail = signClient.findByUsername(username);
-        if (clientDetail != null && !CollectionUtils.isEmpty(clientDetail.getApis())) {
-            apiIds = Lists.newArrayList(clientDetail.getApis());
-        }
-        return apiIds;
     }
 }

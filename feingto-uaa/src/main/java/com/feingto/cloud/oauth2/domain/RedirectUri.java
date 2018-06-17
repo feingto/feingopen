@@ -19,8 +19,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "oauth_redirect_uri")
 @DynamicUpdate
 public class RedirectUri extends IdEntity {
-    private static final long serialVersionUID = -934484307225836703L;
-
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)

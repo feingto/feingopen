@@ -23,8 +23,6 @@ import javax.persistence.Table;
 @Table(name = "oauth_client_detail_authority")
 @DynamicUpdate
 public class ClientDetailAuthority extends IdEntity {
-    private static final long serialVersionUID = -989142546338650235L;
-
     @ManyToOne
     @JoinColumn(nullable = false)
     private ClientDetail clientDetail;

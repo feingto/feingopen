@@ -34,11 +34,11 @@ public class RoleService extends BaseService<Role, String> implements IRole {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Role save(Role role) {
-        Assert.notNull(role.getName(), "角色名称不能为空.");
+        Assert.notNull(role.getSn(), "角色不能为空.");
         if (role.isNew()) {
-            Assert.state(super.count(Condition.NEW().eq("name", role.getName())) == 0, "角色名称\"" + role.getName() + "\"已存在.");
+            Assert.state(super.count(Condition.NEW().eq("name", role.getSn())) == 0, "角色\"" + role.getSn() + "\"已存在.");
         } else {
-            Assert.state(super.count(Condition.NEW().ne("id", role.getId()).eq("name", role.getName())) == 0, "角色名称\"" + role.getName() + "\"已存在.");
+            Assert.state(super.count(Condition.NEW().ne("id", role.getId()).eq("name", role.getSn())) == 0, "角色\"" + role.getSn() + "\"已存在.");
         }
         return roleRepository.save(role);
     }

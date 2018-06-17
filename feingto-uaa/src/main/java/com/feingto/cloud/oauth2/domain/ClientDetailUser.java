@@ -1,7 +1,6 @@
 package com.feingto.cloud.oauth2.domain;
 
 import com.feingto.cloud.domain.IdEntity;
-import com.feingto.cloud.domain.type.Stage;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,9 +16,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "oauth_client_detail_api")
+@Table(name = "oauth_client_detail_user")
 @DynamicUpdate
-public class ClientDetailApi extends IdEntity {
+public class ClientDetailUser extends IdEntity {
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn
@@ -27,13 +26,5 @@ public class ClientDetailApi extends IdEntity {
 
     @NotNull
     @Column(nullable = false)
-    private String apiId;
-
-    /**
-     * 环境类型（线上、预发、测试）
-     */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(length = 16, nullable = false)
-    private Stage stage;
+    private String username;
 }

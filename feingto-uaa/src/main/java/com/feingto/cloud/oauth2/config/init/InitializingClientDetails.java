@@ -1,7 +1,8 @@
 package com.feingto.cloud.oauth2.config.init;
 
-import com.feingto.cloud.domain.type.IntervalUnit;
-import com.feingto.cloud.oauth2.domain.*;
+import com.feingto.cloud.oauth2.domain.Authority;
+import com.feingto.cloud.oauth2.domain.GrantType;
+import com.feingto.cloud.oauth2.domain.Scope;
 import com.feingto.cloud.oauth2.security.GwClientDetailsService;
 import com.feingto.cloud.oauth2.service.IClientDetail;
 import com.feingto.cloud.oauth2.service.impl.AuthorityService;
@@ -77,17 +78,6 @@ public class InitializingClientDetails implements InitializingBean {
             clientDetails.setClientSecret(DigestUtils.md5Hex("gateway123456"));
             clientDetails.setRegisteredRedirectUri(Collections.emptySet());
             oAuth2DatabaseClientDetailsService.addClientDetails(clientDetails);
-
-            // 默认流量限制1分钟3次
-            ClientDetail gwClientDetails = gwClientDetailsService.findOne(Condition.NEW()
-                    .eq("clientId", clientDetails.getClientId()));
-            gwClientDetails.setClientLimit(ClientDetailLimit.builder()
-                    .clientDetail(gwClientDetails)
-                    .limits(3L)
-                    .frequency(1L)
-                    .intervalUnit(IntervalUnit.MINUTES)
-                    .build());
-            gwClientDetailsService.save(gwClientDetails);
         }
     }
 }

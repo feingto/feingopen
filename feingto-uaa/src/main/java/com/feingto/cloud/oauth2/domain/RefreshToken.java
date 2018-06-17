@@ -25,8 +25,6 @@ import java.util.Set;
 @Table(name = "oauth_refresh_token")
 @DynamicUpdate
 public class RefreshToken extends IdEntity {
-    private static final long serialVersionUID = 5098726969153736890L;
-
     @NotNull
     @Column(nullable = false, unique = true)
     private String tokenId;

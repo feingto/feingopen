@@ -25,8 +25,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "oauth_client_detail_resource")
 @DynamicUpdate
 public class ClientDetailResourceId extends IdEntity {
-    private static final long serialVersionUID = -8953957488271575993L;
-
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn

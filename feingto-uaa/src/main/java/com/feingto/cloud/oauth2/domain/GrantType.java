@@ -24,8 +24,6 @@ import java.util.Set;
 @Table(name = "oauth_grant_type")
 @DynamicUpdate
 public class GrantType extends IdEntity {
-    private static final long serialVersionUID = 1800217888568975487L;
-
     @Builder.Default
     @OneToMany(mappedBy = "grantType")
     private Set<ClientDetailGrantType> clientDetailGrantTypes = new HashSet<>();
