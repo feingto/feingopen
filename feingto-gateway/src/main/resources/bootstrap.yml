@@ -1,0 +1,59 @@
+server.port: 8215
+
+spring:
+  application.name: feingto-gateway
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: feingto-config
+      fail-fast: true
+      retry:
+        initial-interval: 1000
+        max-attempts: 20
+      username: user
+      password: ${CONFIG_SERVER_PASSWORD:123456}
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      config:
+        format: YAML
+        prefix: config
+        data-key: configuration
+        defaut-context: ${spring.application.name}
+      discovery:
+        fail-fast: false
+        health-check-interval: 10s
+        health-check-path: ${server.servlet.context-path:}${management.endpoints.web.base-path:}/${management.endpoints.web.path-mapping.health:health}
+        prefer-ip-address: true
+        query-passing: true
+        register-health-check: true
+        tags: user.name=user, user.password=123456
+    stream:
+      defaultBinder: gatewayRabbit
+      bindings:
+        input:
+          destination: defaultMessage
+          group: defaultMessageGroup #同一个组内只有一个成员会收到该消息
+        output:
+          destination: defaultMessage
+          contentType: application/json
+        receiveRoute:
+          destination: gatewayRouteStream
+        publishLog:
+          destination: gatewayLogStream
+          contentType: application/json
+        publishTcc:
+          destination: transactionalStream
+          contentType: application/json
+        receiveTcc:
+          destination: transactionalStream
+      binders:
+        gatewayRabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: ${RABBITMQ_HOST:localhost}
+                port: ${RABBITMQ_PORT:5672}
+                virtualHost: /
