@@ -12,10 +12,12 @@
         <module>feingto-config</module>
         <module>feingto-account</module>
         <module>feingto-uaa</module>
+        <module>feingto-gateway</module>
+        <module>feingto-remote</module>
     </modules>
 
     <properties>
-        <spring.boot.version>2.0.3.RELEASE</spring.boot.version>
+        <spring.boot.version>2.0.2.RELEASE</spring.boot.version>
         <spring.cloud.version>Finchley.RC2</spring.cloud.version>
         <spring-boot-admin.version>2.0.0</spring-boot-admin.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -69,16 +71,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- Feing modules -->
+            <!-- Feingto modules -->
             <dependency>
                 <groupId>com.feingto</groupId>
                 <artifactId>feingto-core</artifactId>
-                <version>1.2</version>
+                <version>1.5.2</version>
             </dependency>
             <dependency>
                 <groupId>com.feingto</groupId>
                 <artifactId>feingto-remote</artifactId>
-                <version>1.2</version>
+                <version>1.0</version>
             </dependency>
             <!-- Apache Commons -->
             <dependency>
