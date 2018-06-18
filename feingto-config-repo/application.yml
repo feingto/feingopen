@@ -57,23 +57,6 @@ hystrix:
   share-security-context: true
   stream.dashboard.intervalInMilliseconds: 5000
 
-management:
-  endpoints.web:
-    base-path: /mgmt
-    cors:
-      allow-credentials: true
-      allowed-headers: '*'
-      allowed-methods: '*'
-      allowed-origins: '*'
-      max-age: 1800s
-    exposure:
-      include: '*'
-      exclude: 'env'
-  endpoint:
-    health.show-details: always
-    shutdown.enabled: true
-    jolokia.enabled: true
-
 authserver:
   host: ${UAA_HOST:localhost}
   port: ${UAA_PORT:8800}
