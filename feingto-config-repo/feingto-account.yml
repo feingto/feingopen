@@ -2,7 +2,6 @@ spring:
   profiles:
     include: init-db-data-user
   datasource:
-#    schema: feingto-account.sql
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feingto-account?characterEncoding=utf-8
     username: root
     password: root

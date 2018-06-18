@@ -1,6 +1,5 @@
 spring:
   datasource:
-#    schema: classpath:/feingto-gateway.sql
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/feingto-gateway?characterEncoding=utf-8
     username: root
     password: root
@@ -19,17 +18,15 @@ ribbon:
   read-timeout: 60000
   max-auto-retries: 1
   max-auto-retries-next-server: 1
-  eureka.enabled: false #使用eureka注册服务时设为true, consul时设为false
+  eureka.enabled: false
 
 zuul:
-#  add-host-header: true
   max-per-route-connections: 100
   max-total-connections: 500
   servlet-path: /file
   ignored-patterns: /, /mgmt/*, /instances, /oauth/**
   ignored-services: '*'
   DebugFilter.pre.disable: true
-  flow.limit.client: false # gateway oauth2 client flow limit toggle
   routes:
     uaa-service:
       path: ${authserver.context-path}/**

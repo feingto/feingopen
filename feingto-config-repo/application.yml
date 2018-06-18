@@ -32,26 +32,11 @@ spring:
   security:
     user:
       password: ${CONFIG_SERVER_PASSWORD:123456}
-  sleuth:
-    integration:
-      enabled: false
-    sampler:
-      probability: 1.0
-    scheduled:
-      skip-pattern: (^org.*HystrixStreamTask$|^org.*ConsulCatalogWatch$|^org.*ConfigWatch$)
-    web:
-      skip-pattern: (^/mgmt.*|^/instances.*|.+favicon.*|.*.js|.*.css|.*fonts.*|.*.jpg|.*.jpeg|.*.png|.*.gif)
   zipkin:
     base-url: http://${ZIPKIN_HOST:localhost}:9411/
     locator.discovery.enabled: true
     sender.type: RABBIT
     rabbitmq.queue: gateway-tracing
-  boot.admin.client:
-    url: http://${MONITOR_HOST:localhost}:8100
-    instance:
-      health-url: http://${spring.application.name}:${server.port}${spring.cloud.consul.discovery.health-check-path}
-      management-url: http://${spring.application.name}:${server.port}${server.servlet.context-path:}${management.endpoints.web.base-path:}
-      service-base-url: http://${spring.application.name}:${server.port}
 
 feign:
   httpclient.enabled: true
@@ -110,20 +95,3 @@ security:
 
 logging:
   file: /logs/feingopen/${spring.application.name}_${server.port}.log
-  pattern:
-    console: '%clr(%d{dd/MM HH:mm:ss}) %clr(%5p) %clr(%-40.40logger{39}){cyan} %clr(-){faint} %m%n'
-  level:
-    com.feing.cloud: DEBUG
-    com.feing.cloud.remote:
-      SignClient: DEBUG
-      ZipkinClient: DEBUG
-      account:
-        ResourceClient: DEBUG
-        RoleClient: DEBUG
-        UserClient: DEBUG
-    org:
-      hibernate: ERROR
-      quartz: INFO
-      springframework:
-        security: INFO
-        web: INFO
